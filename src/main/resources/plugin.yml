@@ -1,6 +1,7 @@
 name: sample
 version: 0.0.1
-main: xyz.misilelaboratory
+main: xyz.misilelaboratory.simpletpa.SimpleTPA
 api-version: 1.19
 libraries:
-  - org.jetbrains.kotlin:kotlin-stdlib:1.7.10
+  - org.jetbrains.kotlin:kotlin-stdlib:1.7.20
+  - io.github.monun:kommand-core:2.14.0
