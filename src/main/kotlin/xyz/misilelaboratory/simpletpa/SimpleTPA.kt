@@ -80,7 +80,7 @@ class SimpleTPA: JavaPlugin() {
                         val receiver = sender as Player
 
                         if (elistener.hasIt(receiver, s)) {
-                            receiver.teleport(s)
+                            s.teleport(receiver)
                             elistener.b[receiver.uniqueId]?.remove(s.uniqueId)
                         }
 
@@ -138,7 +138,7 @@ class SimpleTPA: JavaPlugin() {
                         if (!elistener.hasItHome(s, n)) {
                             s.sendMessage("그 이름의 home은 존재하지 않습니다.")
                         } else {
-                            s.teleport(elistener.homes[s.uniqueId]!![name]!!)
+                            s.teleport(elistener.homes[s.uniqueId]!![n]!!)
                         }
                     }
                 }
