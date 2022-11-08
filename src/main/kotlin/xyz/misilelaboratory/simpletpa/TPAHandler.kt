@@ -11,9 +11,9 @@ import java.util.UUID
 
 class TPAHandler: Listener {
 
-    val a = mutableMapOf<UUID, Location>()
-    val b = mutableMapOf<UUID, MutableList<UUID>>()
-    val homes = mutableMapOf<UUID, MutableMap<String, Location>>()
+    var a = mutableMapOf<UUID, Location>()
+    var b = mutableMapOf<UUID, MutableList<UUID>>()
+    var homes = mutableMapOf<UUID, MutableMap<String, Location>>()
 
     @EventHandler
     fun onDeath(e: PlayerDeathEvent) {

@@ -2,8 +2,23 @@ package xyz.misilelaboratory.simpletpa
 
 import io.github.monun.kommand.getValue
 import io.github.monun.kommand.kommand
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
+import java.io.File
+import java.util.*
+
+@Serializable
+data class DataClass(
+    val homes: MutableMap<String, MutableMap<String, LocationData>>?
+)
+
+@Serializable
+data class LocationData(val world: String, val locations: MutableList<Double>)
 
 @Suppress("unused")
 class SimpleTPA: JavaPlugin() {
@@ -11,6 +26,21 @@ class SimpleTPA: JavaPlugin() {
     private val elistener = TPAHandler()
 
     override fun onEnable() {
+        if (!File("homes.json").exists()) {
+            File("homes.json").createNewFile()
+        }
+        val st = Json.decodeFromString<DataClass>(File("homes.json").readText())
+        val m = mutableMapOf<UUID, MutableMap<String, Location>>()
+
+        if (st.homes != null) {
+            for (i in st.homes) {
+                val m2 = mutableMapOf<String, Location>()
+                for (i2 in i.value) {
+                    m2[i2.key] = Location(this.server.getWorld(UUID.fromString(i2.value.world)), i2.value.locations[0], i2.value.locations[1], i2.value.locations[2])
+                }
+                m[UUID.fromString(i.key)] = m2
+            }
+        }
         server.logger.info("Enabled")
         kommand {
             register("back") {
@@ -118,6 +148,15 @@ class SimpleTPA: JavaPlugin() {
     }
 
     override fun onDisable() {
+        val ret = mutableMapOf<String, MutableMap<String, LocationData>>()
+        for (i in elistener.homes) {
+            val ret2 = mutableMapOf<String, LocationData>()
+            for (i2 in i.value) {
+                ret2[i2.key] = LocationData(i2.value.world.uid.toString(), mutableListOf(i2.value.x, i2.value.y, i2.value.z))
+            }
+            ret[i.key.toString()] = ret2
+        }
+        File("homes.json").writeText(Json.encodeToString(DataClass(ret)))
         server.logger.info("Disabled")
     }
 }
