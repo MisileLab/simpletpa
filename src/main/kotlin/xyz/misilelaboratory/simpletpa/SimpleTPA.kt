@@ -29,7 +29,7 @@ class SimpleTPA: JavaPlugin() {
                         val receiver: Player by context
                         val s = sender as Player
 
-                        if (receiver.uniqueId == receiver.uniqueId) {
+                        if (receiver.uniqueId == s.uniqueId) {
                             s.sendMessage("자기 자신을 대상으로 지정할 수 없습니다.")
                         } else if (!elistener.hasIt(receiver, s)) {
                             if (elistener.b[receiver.uniqueId] == null) {
