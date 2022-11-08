@@ -7,9 +7,11 @@ import org.bukkit.plugin.java.JavaPlugin
 
 @Suppress("unused")
 class SimpleTPA: JavaPlugin() {
+
+    private val elistener = TPAHandler()
+
     override fun onEnable() {
         server.logger.info("Enabled")
-        val elistener = TPAHandler()
         kommand {
             register("back") {
                 executes {
@@ -40,7 +42,7 @@ class SimpleTPA: JavaPlugin() {
             register("tpaccept") {
                 then("player" to players()) {
                     executes {context ->
-                        val player: List<Player> by context
+                        val player: Collection<Player> by context
                         val s = sender as Player
 
                         for (i in player) {
@@ -57,7 +59,7 @@ class SimpleTPA: JavaPlugin() {
             register("tpadeny") {
                 then("player" to players()) {
                     executes { context ->
-                        val player: List<Player> by context
+                        val player: Collection<Player> by context
                         val s = sender as Player
 
                         for (i in player) {
@@ -70,7 +72,49 @@ class SimpleTPA: JavaPlugin() {
                     }
                 }
             }
+            register("sethome") {
+                then("name" to string()) {
+                    executes { context ->
+                        val s = sender as Player
+                        val n: String by context
+
+                        if (elistener.homes[s.uniqueId] == null) {
+                            elistener.homes[s.uniqueId] = mutableMapOf()
+                        }
+                        elistener.homes[s.uniqueId]!![n] = s.location
+                    }
+                }
+            }
+            register("delhome") {
+                then("name" to string()) {
+                    executes {context ->
+                        val s = sender as Player
+                        val n: String by context
+
+                        if (elistener.hasItHome(s, n)) {
+                            s.sendMessage("그런 이름의 home은 없습니다.")
+                        } else {
+                            elistener.homes[s.uniqueId]!!.remove(n)
+                        }
+                    }
+                }
+            }
+            register("home") {
+                then("name" to string()) {
+                    executes { context ->
+                        val s = sender as Player
+                        val n: String by context
+
+                        if (elistener.hasItHome(s, n)) {
+                            s.sendMessage("그 이름의 home은 존재하지 않습니다.")
+                        } else {
+                            s.teleport(elistener.homes[s.uniqueId]!![name]!!)
+                        }
+                    }
+                }
+            }
         }
+        server.pluginManager.registerEvents(elistener, this)
     }
 
     override fun onDisable() {

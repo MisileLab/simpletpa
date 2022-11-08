@@ -1,5 +1,5 @@
-name: sample
-version: 0.0.1
+name: SimpleTPA
+version: 0.0.2
 main: xyz.misilelaboratory.simpletpa.SimpleTPA
 api-version: 1.19
 libraries:
