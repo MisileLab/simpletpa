@@ -91,7 +91,7 @@ class SimpleTPA: JavaPlugin() {
                         val s = sender as Player
                         val n: String by context
 
-                        if (elistener.hasItHome(s, n)) {
+                        if (!elistener.hasItHome(s, n)) {
                             s.sendMessage("그런 이름의 home은 없습니다.")
                         } else {
                             elistener.homes[s.uniqueId]!!.remove(n)
@@ -105,7 +105,7 @@ class SimpleTPA: JavaPlugin() {
                         val s = sender as Player
                         val n: String by context
 
-                        if (elistener.hasItHome(s, n)) {
+                        if (!elistener.hasItHome(s, n)) {
                             s.sendMessage("그 이름의 home은 존재하지 않습니다.")
                         } else {
                             s.teleport(elistener.homes[s.uniqueId]!![name]!!)
