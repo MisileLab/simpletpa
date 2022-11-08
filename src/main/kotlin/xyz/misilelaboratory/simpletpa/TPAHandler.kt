@@ -20,8 +20,8 @@ class TPAHandler: Listener {
         a[e.player.uniqueId] = e.player.location
     }
 
-    fun hasIt(p: Player, s: Player): Boolean {
-        return b[s.uniqueId]?.contains(p.uniqueId) == true
+    fun hasIt(receiver: Player, sender: Player): Boolean {
+        return b[receiver.uniqueId]?.contains(sender.uniqueId) == true
     }
 
     fun hasItHome(p: Player, name: String): Boolean {

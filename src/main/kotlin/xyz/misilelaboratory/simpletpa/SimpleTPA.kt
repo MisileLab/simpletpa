@@ -24,60 +24,56 @@ class SimpleTPA: JavaPlugin() {
                 }
             }
             register("tpa") {
-                then("p" to player()) {
+                then("receiver" to player()) {
                     executes { context ->
-                        val p: Player by context
+                        val receiver: Player by context
                         val s = sender as Player
 
-                        if (p.uniqueId == s.uniqueId) {
+                        if (receiver.uniqueId == receiver.uniqueId) {
                             s.sendMessage("자기 자신을 대상으로 지정할 수 없습니다.")
-                        } else if (!elistener.hasIt(p, s)) {
-                            if (elistener.b[s.uniqueId] == null) {
-                                elistener.b[s.uniqueId] = mutableListOf()
+                        } else if (!elistener.hasIt(receiver, s)) {
+                            if (elistener.b[receiver.uniqueId] == null) {
+                                elistener.b[receiver.uniqueId] = mutableListOf()
                             }
-                            elistener.b[s.uniqueId]!!.add(p.uniqueId)
-                            p.sendMessage("${s.name}님에게 tpa 요청이 왔습니다. /tpaccept를 사용해 받거나, /tpadeny를 사용해 거절하세요.")
+                            elistener.b[receiver.uniqueId]!!.add(s.uniqueId)
+                            receiver.sendMessage("${s.name}님에게 tpa 요청이 왔습니다. /tpaccept ${s.name} 명령어를 사용해 받거나, /tpadeny ${s.name} 명령어를 사용해 거절하세요.")
                         } else {
-                            p.sendMessage("tpa를 이미 보낸 적이 있습니다.")
+                            s.sendMessage("tpa를 이미 보낸 적이 있습니다.")
                         }
                     }
                 }
             }
             register("tpaccept") {
-                then("players" to players()) {
+                then("s" to player()) {
                     executes {context ->
-                        val players: Collection<Player> by context
-                        val s = sender as Player
+                        val s: Player by context
+                        val receiver = sender as Player
 
-                        for (i in players) {
-                            if (elistener.hasIt(i, s)) {
-                                i.teleport(s)
-                                elistener.b[s.uniqueId]?.remove(i.uniqueId)
-                            }
+                        if (elistener.hasIt(receiver, s)) {
+                            receiver.teleport(s)
+                            elistener.b[receiver.uniqueId]?.remove(s.uniqueId)
                         }
 
-                        s.sendMessage("모든 사람을 다 텔레포트시켰습니다.")
+                        receiver.sendMessage("${s.name}님을 텔레포트시켰습니다. (안되었을 경우 tpa가 오지 않은 것입니다.)")
                     }
                 }
             }
             register("tpadeny") {
-                then("players" to players()) {
+                then("s" to player()) {
                     executes { context ->
-                        val players: Collection<Player> by context
-                        val s = sender as Player
+                        val s: Player by context
+                        val receiver = sender as Player
 
-                        for (i in players) {
-                            if (elistener.hasIt(i, s)) {
-                                elistener.b[s.uniqueId]?.remove(i.uniqueId)
-                            }
+                        if (elistener.hasIt(receiver, s)) {
+                            elistener.b[receiver.uniqueId]?.remove(s.uniqueId)
                         }
 
-                        s.sendMessage("모든 사람을 다 거절했습니다.")
+                        receiver.sendMessage("${receiver.name}님의 tpa 요청을 거절했습니다.")
                     }
                 }
             }
             register("sethome") {
-                then("name" to string()) {
+                then("n" to string()) {
                     executes { context ->
                         val s = sender as Player
                         val n: String by context
