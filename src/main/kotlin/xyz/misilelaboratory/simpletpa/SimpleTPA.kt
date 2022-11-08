@@ -24,7 +24,7 @@ class SimpleTPA: JavaPlugin() {
                 }
             }
             register("tpa") {
-                then("player" to player()) {
+                then("p" to player()) {
                     executes { context ->
                         val p: Player by context
                         val s = sender as Player
@@ -32,6 +32,10 @@ class SimpleTPA: JavaPlugin() {
                         if (p.uniqueId == s.uniqueId) {
                             s.sendMessage("자기 자신을 대상으로 지정할 수 없습니다.")
                         } else if (!elistener.hasIt(p, s)) {
+                            if (elistener.b[s.uniqueId] == null) {
+                                elistener.b[s.uniqueId] = mutableListOf()
+                            }
+                            elistener.b[s.uniqueId]!!.add(p.uniqueId)
                             p.sendMessage("${s.name}님에게 tpa 요청이 왔습니다. /tpaccept를 사용해 받거나, /tpadeny를 사용해 거절하세요.")
                         } else {
                             p.sendMessage("tpa를 이미 보낸 적이 있습니다.")
@@ -40,12 +44,12 @@ class SimpleTPA: JavaPlugin() {
                 }
             }
             register("tpaccept") {
-                then("player" to players()) {
+                then("players" to players()) {
                     executes {context ->
-                        val player: Collection<Player> by context
+                        val players: Collection<Player> by context
                         val s = sender as Player
 
-                        for (i in player) {
+                        for (i in players) {
                             if (elistener.hasIt(i, s)) {
                                 i.teleport(s)
                                 elistener.b[s.uniqueId]?.remove(i.uniqueId)
@@ -57,12 +61,12 @@ class SimpleTPA: JavaPlugin() {
                 }
             }
             register("tpadeny") {
-                then("player" to players()) {
+                then("players" to players()) {
                     executes { context ->
-                        val player: Collection<Player> by context
+                        val players: Collection<Player> by context
                         val s = sender as Player
 
-                        for (i in player) {
+                        for (i in players) {
                             if (elistener.hasIt(i, s)) {
                                 elistener.b[s.uniqueId]?.remove(i.uniqueId)
                             }
@@ -86,7 +90,7 @@ class SimpleTPA: JavaPlugin() {
                 }
             }
             register("delhome") {
-                then("name" to string()) {
+                then("n" to string()) {
                     executes {context ->
                         val s = sender as Player
                         val n: String by context
@@ -100,7 +104,7 @@ class SimpleTPA: JavaPlugin() {
                 }
             }
             register("home") {
-                then("name" to string()) {
+                then("n" to string()) {
                     executes { context ->
                         val s = sender as Player
                         val n: String by context
