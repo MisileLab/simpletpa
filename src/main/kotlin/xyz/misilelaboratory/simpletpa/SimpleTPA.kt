@@ -7,10 +7,15 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.bukkit.Location
+import org.bukkit.command.Command
+import org.bukkit.command.CommandSender
+import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import java.util.*
+
+val elistener = TPAHandler()
 
 @Serializable
 data class DataClass(
@@ -22,8 +27,6 @@ data class LocationData(val world: String, val locations: MutableList<Double>)
 
 @Suppress("unused")
 class SimpleTPA: JavaPlugin() {
-
-    private val elistener = TPAHandler()
 
     override fun onEnable() {
         if (!File("homes.json").exists()) {
@@ -145,6 +148,10 @@ class SimpleTPA: JavaPlugin() {
             }
         }
         server.pluginManager.registerEvents(elistener, this)
+        val ptab = PluginTabComplete()
+        getCommand("sethome")!!.tabCompleter = ptab
+        getCommand("delhome")!!.tabCompleter = ptab
+        getCommand("home")!!.tabCompleter = ptab
     }
 
     override fun onDisable() {
@@ -158,5 +165,21 @@ class SimpleTPA: JavaPlugin() {
         }
         File("homes.json").writeText(Json.encodeToString(DataClass(ret)))
         server.logger.info("Disabled")
+    }
+}
+
+class PluginTabComplete: TabCompleter {
+    override fun onTabComplete(
+        sender: CommandSender,
+        command: Command,
+        label: String,
+        args: Array<out String>?
+    ): MutableList<String>? {
+        val p = sender as Player?
+
+        if (p != null) {
+            return elistener.homes[p.uniqueId]?.keys?.toMutableList()
+        }
+        return null
     }
 }
