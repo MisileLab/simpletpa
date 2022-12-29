@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version "1.7.22"
-    kotlin("plugin.serialization") version "1.7.22"
+    kotlin("jvm") version "1.8.0"
+    kotlin("plugin.serialization") version "1.8.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.22")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.0")
     implementation("io.github.monun:kommand-api:2.14.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
 }
